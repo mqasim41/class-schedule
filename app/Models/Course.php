@@ -16,19 +16,11 @@ class Course extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'class_time',
         'course_name',
         'user_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'class_time' => 'datetime', // Ensure that class_time is cast to a DateTime object
-    ];
+    
 
     /**
      * Get the user that owns the course.
@@ -37,4 +29,13 @@ class Course extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the time slots for the course.
+     */
+    public function timeSlots()
+    {
+        return $this->hasMany(Slot::class);
+    }
 }
+

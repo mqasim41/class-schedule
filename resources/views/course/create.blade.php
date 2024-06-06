@@ -2,54 +2,82 @@
 
 @section('content')
 
-<div class="container">
+<div class="container-xl">
+    <div class="row">
+        <!-- Main content with form and table -->
+        <div class="col-md-9">
+            <form action="{{ route('course.store') }}" method="post">
+                @csrf
+                
+                <div class="row justify-content-center text-center mt-3">
+                    <div class="col-12 col-lg-6">
+                        <label for="course_name" class="form-label">Course Name:</label>
+                        <input type="text" class="form-control mb-3" id="course_name" name="course_name">
+                        <button type="submit" class="btn btn-outline-primary">Add</button>
+                    </div>
+                </div>
+            </form>
 
-
-    
-    @foreach($courses as $course)
-        <div class="row justify-content-center text-center">
-            <div class="mt-2 bg-white p-2 col-6 shadow mb-3">
-                <span class="float-start mt-1">{{ $course->course_name }}</span>
-                <span class="float-end">
-                    {{ $course->class_time->format('H:i') }}-{{ $course->class_time->addMinutes(50)->format('H:i') }}
-                    <a href="{{ route('course.remove', ['id' => $course->id]) }}" class="btn btn-danger btn-sm">Remove</a>
-                </span>
-            </div>
+            <form method="post" action="{{ route('course.update') }}" class='row justify-content-center'>
+                @csrf
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>Timeslot</th>
+                                @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
+                                    <th>{{ $day }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class='form-input'>9:00-9:50</div>
+                                    <div class='form-input'>10:00-10:50</div>
+                                    <div class='form-input'>11:00-11:50</div>
+                                    <div class='form-input'>12:00-12:50</div>
+                                    <div class='form-input'>13:00-13:50</div>
+                                    <div class='form-input'>14:00-14:50</div>
+                                    <div class='form-input'>15:00-15:50</div>
+                                    <div class='form-input'>16:00-16:50</div>
+                                </td>
+                                @foreach($workingDays as $day)
+                                    <td>
+                                        @foreach($timeSlots as $timeSlot)
+                                            @if($timeSlot->time->isoFormat('dddd') == $day)
+                                            <select class="form-select" name="course_id[{{ $timeSlot->id }}][{{ $day }}]">
+                                                @foreach($courses as $course)
+                                                    <option value="{{ $course->id }}" {{ $course->id == optional($timeSlot->course)->id ? 'selected' : '' }}>
+                                                        {{ $course->course_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                @endforeach
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="submit" class="btn btn-outline-danger mb-5 col-12 col-lg-6">Set Schedule</button>
+            </form>
         </div>
-    @endforeach
 
-    
-
-    
-    
-
-    
-
-    <form action="{{ route('course.store') }}" method="post">
-        @csrf
-
-        <div class="row justify-content-center text-center">
-            <div class="col-6">
-                <div class="display-6 mb-3">Add Your Courses</div>
-                <label for="class_time" class="form-label mb-3">Class Time:</label>
-                <input type="datetime-local" class="form-control " id="class_time" name="class_time">
-            </div>
-            
+        <!-- Sidebar with courses on the right -->
+        <div class="col-md-3 mt-3">
+            <div class="text-center bold">Your Courses:</div>
+            @foreach($courses as $course)
+                @if($course->course_name != "Break")
+                    <div class="bg-white col-12 p-2 shadow m-3 d-flex align-items-center justify-content-between">
+                        <span class="mt-1">{{ $course->course_name }}</span>
+                        <a href="{{ route('course.remove', ['id' => $course->id]) }}" class="btn btn-danger btn-sm">Remove</a>
+                    </div>
+                @endif
+            @endforeach
         </div>
-        <div class="row justify-content-center text-center">
-            <div class="col-6">
-                <label for="course_name" class="form-label">Course Name:</label>
-                <input type="text" class="form-control mb-3" id="course_name" name="course_name">
-                <button type="submit" class="btn btn-outline-primary">Submit</button>
-            </div>
-            
-        </div>
-
-        
-
-        
-    </form>
-
+    </div>
 </div>
 
 @endsection

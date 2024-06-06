@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/toggle', [CourseController::class, 'toggle'])->name('handleToggle');
     Route::get('/course', [CourseController::class, 'create'])->name('course.create');
     Route::post('/store', [CourseController::class, 'store'])->name('course.store');
+    Route::post('/update', [CourseController::class, 'update'])->name('course.update');
     Route::get('/remove', [CourseController::class, 'remove'])->name('course.remove');
 });
 

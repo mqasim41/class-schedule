@@ -18,19 +18,17 @@
     </div>
 
     <div class="row justify-content-center text-center">
-        @if(is_array($coursesToday) && empty($coursesToday))
+        @if($slotsToday->isEmpty())
             <div class="alert alert-info mt-3" role="alert">
                 No classes today.
             </div>
-        @elseif($coursesToday->isEmpty())
-            <div class="alert alert-info mt-3" role="alert">
-                No classes today.
-            </div>
+        
         @else
-            @foreach($coursesToday as $course)
+
+            @foreach($slotsToday as $slot)
                 <div class="mt-2 bg-white p-2 col-6 shadow">
-                    {{ $course->course_name }} <br>
-                    {{ $course->class_time->format('H:i') }}-{{ $course->class_time->addMinutes(50)->format('H:i') }}
+                    {{ $slot->course->course_name }} <br>
+                    {{ $slot->time->format('H:i') }}-{{ $slot->time->addMinutes(50)->format('H:i') }}
                 </div>
             @endforeach
         @endif
